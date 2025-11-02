@@ -128,7 +128,7 @@ def get_events():
     return jsonify(out)
 
 
-# ✅ API route to fetch alerts
+#  API route to fetch alerts
 @app.route('/api/alerts', methods=['GET'])
 def get_alerts():
     db = SessionLocal()
