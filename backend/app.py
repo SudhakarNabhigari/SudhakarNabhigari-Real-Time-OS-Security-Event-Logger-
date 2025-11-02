@@ -44,7 +44,6 @@ def evaluate_rules(event):
     return alerts
 
 
-# ----------- Routes -----------
 
 @app.route('/')
 def index():
