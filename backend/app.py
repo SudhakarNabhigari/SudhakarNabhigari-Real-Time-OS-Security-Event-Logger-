@@ -4,7 +4,6 @@ from datetime import datetime
 import json
 import sys, os
 
-# --- Fix Python import path (since db.py is one folder up) ---
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from db import SessionLocal, Event, Alert, init_db
 
