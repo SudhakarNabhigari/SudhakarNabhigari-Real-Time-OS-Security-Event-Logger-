@@ -54,7 +54,7 @@ def index():
     return render_template('index.html', events=events, alerts=alerts)
 
 
-# ✅ Route to receive event data from collector
+#  Route to receive event data from collector
 @app.route('/event', methods=['POST'])
 def receive_event():
     """Receive events from collector.py"""
@@ -92,7 +92,7 @@ def receive_event():
     return jsonify({'status': 'ok', 'alerts': created_alerts})
 
 
-# ✅ Route to receive alert data (optional, if collector sends directly)
+#  Route to receive alert data (optional, if collector sends directly)
 @app.route('/alert', methods=['POST'])
 def receive_alert():
     """Receive pre-generated alerts (optional)"""
@@ -111,7 +111,7 @@ def receive_alert():
     return jsonify({'status': 'alert saved'})
 
 
-# ✅ API route to fetch events
+#  API route to fetch events
 @app.route('/api/events', methods=['GET'])
 def get_events():
     db = SessionLocal()
