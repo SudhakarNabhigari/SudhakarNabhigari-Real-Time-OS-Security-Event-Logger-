@@ -7,7 +7,6 @@ import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from db import SessionLocal, Event, Alert, init_db
 
-# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 init_db()
