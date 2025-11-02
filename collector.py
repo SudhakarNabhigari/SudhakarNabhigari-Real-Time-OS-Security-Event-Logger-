@@ -2,7 +2,7 @@ import time
 import requests
 from datetime import datetime
 
-BACKEND_URL = "http://127.0.0.1:5000"  # Make sure this matches your Flask URL
+BACKEND_URL = "http://127.0.0.1:5000" 
 
 while True:
     data = {
