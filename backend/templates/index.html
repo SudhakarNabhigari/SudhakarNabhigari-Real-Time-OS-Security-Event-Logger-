@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OS Security Logger — Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #334155;
+            margin-top: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .severity-high {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .severity-medium {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+        .severity-low {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ OS Security Logger — Dashboard</h1>
+
+        <h2>Alerts</h2>
+        <table>
+            <tr>
+                <th>Timestamp</th>
+                <th>Severity</th>
+                <th>Message</th>
+                <th>Meta</th>
+            </tr>
+            {% if alerts %}
+                {% for a in alerts %}
+                    <tr>
+                        <td>{{ a.timestamp }}</td>
+                        <td class="severity-{{ a.severity|lower }}">{{ a.severity }}</td>
+                        <td>{{ a.message }}</td>
+                        <td>{{ a.meta }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="4" class="empty">No alerts recorded yet.</td></tr>
+            {% endif %}
+        </table>
+
+        <h2>Recent Events</h2>
+        <table>
+            <tr>
+                <th>Timestamp</th>
+                <th>Host</th>
+                <th>Type</th>
+                <th>Details</th>
+            </tr>
+            {% if events %}
+                {% for e in events %}
+                    <tr>
+                        <td>{{ e.timestamp }}</td>
+                        <td>{{ e.host }}</td>
+                        <td>{{ e.event_type }}</td>
+                        <td>{{ e.details }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan="4" class="empty">No events recorded yet.</td></tr>
+            {% endif %}
+        </table>
+    </div>
+    <script>
+    async function loadData() {
+      try {
+        const [eventsRes, alertsRes] = await Promise.all([
+          fetch('/api/events'),
+          fetch('/api/alerts')
+        ]);
+
+        const events = await eventsRes.json();
+        const alerts = await alertsRes.json();
+
+        // Populate Alerts
+        const alertsDiv = document.getElementById('alerts');
+        alertsDiv.innerHTML = alerts.map(a => `
+          <div class="alert-card alert alert-${a.severity === 'high' ? 'danger' : (a.severity === 'medium' ? 'warning' : 'info')}">
+            <strong>[${a.severity.toUpperCase()}]</strong> ${a.message}<br/>
+            <small>${a.timestamp}</small>
+          </div>
+        `).join('');
+
+        // Populate Events
+        const tbody = document.querySelector('#events tbody');
+        tbody.innerHTML = events.map(e => `
+          <tr>
+            <td>${e.id}</td>
+            <td>${e.timestamp}</td>
+            <td>${e.host}</td>
+            <td>${e.event_type}</td>
+            <td>${e.details}</td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error('Error fetching data', err);
+      }
+    }
+
+    // Load data every 5 seconds
+    loadData();
+    setInterval(loadData, 5000);
+  </script>
+</body>
+</html>
