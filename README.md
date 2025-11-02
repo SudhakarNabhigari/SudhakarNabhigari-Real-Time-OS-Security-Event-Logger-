@@ -1,4 +1,4 @@
-# OS Security Event Logger (MVP)
+# OS Security Event Logger 
 
 
 **What this repo contains**
